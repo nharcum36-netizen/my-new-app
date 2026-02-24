@@ -17,6 +17,8 @@ export default function JournalPage() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [reflection, setReflection] = useState("");
+  const [isLoadingReflection, setIsLoadingReflection] = useState(false);
+  const [reflectionError, setReflectionError] = useState("");
 
   useEffect(() => {
     const saved = localStorage.getItem("journalEntries");
@@ -75,205 +77,166 @@ export default function JournalPage() {
     }
   };
 
-  // 🧠 AI Reflection Generator (local logic)
-  const generateReflection = () => {
+  const generateReflection = async () => {
     if (entries.length === 0) {
-      setReflection("Start journaling to receive insights.");
+      setReflection("Start journaling to receive AI insights.");
       return;
     }
 
-    const moodCounts = {
-      happy: entries.filter((e) => e.mood === "happy").length,
-      neutral: entries.filter((e) => e.mood === "neutral").length,
-      sad: entries.filter((e) => e.mood === "sad").length,
-      angry: entries.filter((e) => e.mood === "angry").length,
-    };
+    setIsLoadingReflection(true);
+    setReflectionError("");
+    
+    try {
+      const latestEntry = entries[0];
+      const response = await fetch("/api/reflect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entry: latestEntry.text }),
+      });
 
-    const dominantMood = Object.entries(moodCounts).sort(
-      (a, b) => b[1] - a[1]
-    )[0][0] as Mood;
+      if (!response.ok) {
+        throw new Error("Failed to generate reflection");
+      }
 
-    const moodMessages: Record<Mood, string> = {
-      happy:
-        "You've been experiencing a positive emotional pattern. Keep nurturing what’s working in your life.",
-      neutral:
-        "Your mood has been balanced overall. This may indicate stability or routine in your days.",
-      sad:
-        "There’s been a noticeable presence of sadness recently. It might help to reflect on what’s contributing to it.",
-      angry:
-        "Anger has appeared frequently in your entries. Identifying triggers could help improve your emotional balance.",
-    };
-
-    const summary =
-      moodMessages[dominantMood] +
-      " Journaling consistently is helping you become more self-aware.";
-
-    setReflection(summary);
+      const data = await response.json();
+      setReflection(data.reflection);
+    } catch (err) {
+      console.error("Error:", err);
+      setReflectionError("Could not generate AI reflection. Please check your OpenAI API key.");
+      setReflection("");
+    } finally {
+      setIsLoadingReflection(false);
+    }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        padding: "60px 20px",
-        display: "flex",
-        justifyContent: "center",
-        backgroundColor: "#f4f6f8",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "800px",
-          background: "white",
-          padding: "40px",
-          borderRadius: "16px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "25px",
-        }}
-      >
-        <h1>Mood Journal</h1>
+    <div className="min-h-screen w-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 md:p-6">
+      <div className="w-full max-w-3xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-3 drop-shadow-lg">
+            🧠 MindScribe Journal
+          </h1>
+          <p className="text-white text-lg md:text-xl drop-shadow-md">
+            Reflect, grow, and understand yourself through journaling
+          </p>
+        </div>
 
-        {/* 🧠 AI Reflection */}
-        <div>
-          <button
-            onClick={generateReflection}
-            style={{
-              padding: "10px 16px",
-              borderRadius: "8px",
-              border: "none",
-              backgroundColor: "#111827",
-              color: "white",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Generate AI Reflection
-          </button>
-
-          {reflection && (
-            <div
-              style={{
-                marginTop: "15px",
-                padding: "15px",
-                background: "#f9fafb",
-                borderRadius: "10px",
-                border: "1px solid #e5e7eb",
-                fontSize: "14px",
-                lineHeight: 1.6,
-              }}
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
+            <h2 className="text-2xl font-bold mb-4">✨ AI Insights</h2>
+            <button
+              onClick={generateReflection}
+              disabled={isLoadingReflection}
+              className="bg-white text-purple-600 font-bold py-2 px-6 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
-              {reflection}
+              {isLoadingReflection ? "Generating..." : "Generate AI Reflection"}
+            </button>
+
+            {reflection && (
+              <div className="mt-4 bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                <p className="text-sm whitespace-pre-line">{reflection}</p>
+              </div>
+            )}
+            
+            {reflectionError && (
+              <div className="mt-4 bg-red-100 text-red-800 p-4 rounded-lg">
+                <p className="text-sm">{reflectionError}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="p-8 space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                How are you feeling?
+              </label>
+              <div className="flex gap-4 text-4xl">
+                {(["happy", "neutral", "sad", "angry"] as Mood[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setMood(m)}
+                    className={`transition transform ${
+                      mood === m ? "scale-125" : "opacity-40 hover:opacity-60"
+                    }`}
+                  >
+                    {moodEmoji(m)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                What's on your mind?
+              </label>
+              <textarea
+                value={entry}
+                onChange={(e) => setEntry(e.target.value)}
+                placeholder="Share your thoughts, feelings, and experiences..."
+                className="w-full h-32 p-4 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none resize-none"
+              />
+            </div>
+
+            <button
+              onClick={saveEntry}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition"
+            >
+              {editingId !== null ? "Update Entry" : "Save Entry"}
+            </button>
+          </div>
+
+          {entries.length > 0 && (
+            <div className="border-t">
+              <div className="p-8">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                  📝 Your Entries ({entries.length})
+                </h3>
+                <div className="space-y-4">
+                  {entries.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 hover:shadow-md transition"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl">{moodEmoji(item.mood)}</span>
+                          <span className="text-xs text-gray-500">
+                            {item.date}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => editEntry(item)}
+                            className="text-sm font-semibold text-blue-600 hover:text-blue-800"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => deleteEntry(item.id)}
+                            className="text-sm font-semibold text-red-600 hover:text-red-800"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 text-sm leading-relaxed">
+                        {item.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {entries.length === 0 && (
+            <div className="p-16 text-center">
+              <p className="text-gray-400 text-lg">
+                No entries yet. Start writing to begin your journal ✍️
+              </p>
             </div>
           )}
         </div>
-
-        {/* Mood Selector */}
-        <div style={{ display: "flex", gap: "15px", fontSize: "24px" }}>
-          {(["happy", "neutral", "sad", "angry"] as Mood[]).map((m) => (
-            <span
-              key={m}
-              onClick={() => setMood(m)}
-              style={{
-                cursor: "pointer",
-                opacity: mood === m ? 1 : 0.4,
-              }}
-            >
-              {moodEmoji(m)}
-            </span>
-          ))}
-        </div>
-
-        <textarea
-          value={entry}
-          onChange={(e) => setEntry(e.target.value)}
-          placeholder="How are you feeling today?"
-          style={{
-            width: "100%",
-            height: "120px",
-            padding: "14px",
-            fontSize: "16px",
-            borderRadius: "10px",
-            border: "1px solid #ddd",
-            resize: "none",
-          }}
-        />
-
-        <button
-          onClick={saveEntry}
-          style={{
-            padding: "12px",
-            borderRadius: "10px",
-            border: "none",
-            backgroundColor: "#4f46e5",
-            color: "white",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-        >
-          {editingId !== null ? "Update Entry" : "Save Entry"}
-        </button>
-
-        <hr />
-
-        {entries.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              padding: "20px",
-              borderRadius: "12px",
-              background: "#fafafa",
-              border: "1px solid #eee",
-              position: "relative",
-            }}
-          >
-            <div style={{ fontSize: "12px", color: "#888" }}>
-              {item.date}
-            </div>
-
-            <div style={{ fontSize: "24px", margin: "8px 0" }}>
-              {moodEmoji(item.mood)}
-            </div>
-
-            <div>{item.text}</div>
-
-            <div
-              style={{
-                position: "absolute",
-                top: "15px",
-                right: "15px",
-                display: "flex",
-                gap: "10px",
-              }}
-            >
-              <button
-                onClick={() => editEntry(item)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#4f46e5",
-                  cursor: "pointer",
-                }}
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={() => deleteEntry(item.id)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#e11d48",
-                  cursor: "pointer",
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );
