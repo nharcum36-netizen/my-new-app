@@ -1,4 +1,19 @@
+# MindScribe - AI-Powered Journaling App
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## 🌐 Live Demo
+
+**Production URL:** [https://my-new-app-one-chi.vercel.app](https://my-new-app-one-chi.vercel.app)
+
+## ✨ Features
+
+- 📖 Beautiful journal interface with integrated Canva-designed journal pages
+- 🤖 AI-powered reflections using OpenAI
+- 😊 Mood tracking (happy, neutral, sad, angry)
+- 💳 Stripe subscription integration
+- 💾 Entry persistence with Supabase or localStorage fallback
+- 📱 Responsive design with Tailwind CSS
 
 ## Getting Started
 
