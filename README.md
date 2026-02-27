@@ -62,3 +62,36 @@ Create a Checkout session (client-side) by POSTing to `/api/checkout` with JSON 
 
 Configure your Stripe Dashboard webhook to point to `/api/webhook` on your deployed domain and set `STRIPE_WEBHOOK_SECRET` accordingly.
 
+## Supabase / Entries persistence
+
+To persist journal entries across devices the app can use Supabase. Required env vars:
+
+- `SUPABASE_URL` — your Supabase project URL
+- `SUPABASE_SERVICE_ROLE` — service role key for server-side inserts
+
+Create a table named `journal_entries` with columns at minimum: `id`, `text`, `mood`, `created_at` (timestamp).
+
+If Supabase is not configured the client will fall back to `localStorage`.
+
+## Client subscription price
+
+Set `NEXT_PUBLIC_PRICE_ID` to the Stripe Price you want customers to subscribe to (created in the Stripe Dashboard). The in-app Subscribe button uses this value to create a Checkout session.
+
+## Admin: Create Prices via API
+
+If you want to create Stripe Products and Prices programmatically, the app includes a protected route at `/api/prices` that accepts `POST` and creates a Product + Price. Protect this route by setting an admin key:
+
+- `PRICE_CREATION_KEY` — a secret string used to authorize price creation requests
+
+Request example (replace <ADMIN_KEY> and values):
+
+```bash
+curl -X POST https://your-site.com/api/prices \
+	-H "Authorization: Bearer <ADMIN_KEY>" \
+	-H "Content-Type: application/json" \
+	-d '{"productName":"Pro Plan","unitAmount":999,"currency":"usd","recurringInterval":"month"}'
+```
+
+Response contains `product` and `price` objects from Stripe. You can then copy the `price.id` into `NEXT_PUBLIC_PRICE_ID` for client Checkout.
+
+

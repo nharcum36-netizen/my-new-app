@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
 
-export const runtime = "edge";
+function getSupabaseClient() {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) return null;
+  return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
+}
 
 export async function POST(req: Request) {
   try {
@@ -24,15 +30,57 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    // Handle the event types you care about
+    // Persist subscription-related events to Supabase (if configured)
+    const supabase = getSupabaseClient();
+
+    const handleSubscription = async (subscription: Stripe.Subscription | null, extra: any = {}) => {
+      if (!subscription || !supabase) return;
+      try {
+        const row = {
+          stripe_subscription_id: subscription.id,
+          stripe_customer_id: subscription.customer as string,
+          status: subscription.status,
+          price_id: subscription.items?.data?.[0]?.price?.id || null,
+          current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : null,
+          metadata: subscription.metadata || {},
+          email: (extra.email as string) || null,
+        };
+
+        await supabase
+          .from("subscriptions")
+          .upsert(row, { onConflict: "stripe_subscription_id" });
+      } catch (err) {
+        console.error("Failed to persist subscription:", err);
+      }
+    };
+
     switch (event.type) {
-      case "checkout.session.completed":
-        // handle successful checkout
-        console.log("Checkout session completed", event.data.object);
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        // session.subscription contains subscription id when mode=subscription
+        const subscriptionId = session.subscription as string | undefined;
+        if (subscriptionId) {
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId as string);
+          await handleSubscription(subscription, { email: session.customer_details?.email });
+        }
         break;
-      case "invoice.payment_succeeded":
-        console.log("Invoice payment succeeded", event.data.object);
+      }
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = invoice.subscription as string | undefined;
+        if (subscriptionId) {
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          await handleSubscription(subscription, { email: invoice.customer_email });
+        }
         break;
+      }
+      case "customer.subscription.updated":
+      case "customer.subscription.created":
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
+        await handleSubscription(subscription, {});
+        break;
+      }
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
