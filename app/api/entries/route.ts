@@ -4,7 +4,13 @@ import { createClient } from "@supabase/supabase-js";
 function getSupabaseClient() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) return null;
+  const hasValidConfig =
+    !!SUPABASE_URL &&
+    !!SUPABASE_SERVICE_ROLE &&
+    !SUPABASE_URL.includes("your_") &&
+    !SUPABASE_SERVICE_ROLE.includes("your_");
+
+  if (!hasValidConfig) return null;
   return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
 }
 

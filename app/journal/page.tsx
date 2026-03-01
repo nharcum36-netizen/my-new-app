@@ -106,11 +106,25 @@ export default function JournalPage() {
   // check subscription status if Supabase client env is available
   useEffect(() => {
     const checkSubscription = async () => {
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-      if (!url || !key) return;
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+      const hasSupabaseConfig =
+        !!url &&
+        !!key &&
+        /^https?:\/\//i.test(url) &&
+        !url.includes("your_") &&
+        !key.includes("your_");
 
-      const supabase = createSupabaseClient(url, key);
+      if (!hasSupabaseConfig) return;
+
+      let supabase;
+      try {
+        supabase = createSupabaseClient(url, key);
+      } catch (err) {
+        console.error("Supabase client init skipped:", err);
+        return;
+      }
+
       setLoadingSubscription(true);
       try {
         const {
@@ -254,11 +268,7 @@ export default function JournalPage() {
   };
 
   const createCheckout = async () => {
-    const priceId = process.env.NEXT_PUBLIC_PRICE_ID;
-    if (!priceId) {
-      alert("Subscription price not configured. Set NEXT_PUBLIC_PRICE_ID.");
-      return;
-    }
+    const priceId = process.env.NEXT_PUBLIC_PRICE_ID?.trim();
 
     try {
       const res = await fetch("/api/checkout", {
@@ -271,7 +281,7 @@ export default function JournalPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert("Could not create checkout session.");
+        alert(data.error || "Could not create checkout session.");
       }
     } catch (err) {
       console.error(err);
