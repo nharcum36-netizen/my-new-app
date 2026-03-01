@@ -92,7 +92,7 @@ export default function HealthPage() {
         <div className="mb-6 rounded-2xl bg-white/95 p-6 shadow-xl">
           <div className="mb-4 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">MindScribe Health Check</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Confidence English Academy Health Check</h1>
               <p className="text-sm text-gray-600">One-click status for core integrations</p>
             </div>
             <button

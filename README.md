@@ -8,7 +8,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### Quick Links
 
-- Journal: [https://my-new-app-one-chi.vercel.app/journal](https://my-new-app-one-chi.vercel.app/journal)
+- Programs: [https://my-new-app-one-chi.vercel.app/journal](https://my-new-app-one-chi.vercel.app/journal)
 - Health dashboard: [https://my-new-app-one-chi.vercel.app/admin/health](https://my-new-app-one-chi.vercel.app/admin/health)
 - Health API: [https://my-new-app-one-chi.vercel.app/api/health](https://my-new-app-one-chi.vercel.app/api/health)
 
@@ -95,14 +95,14 @@ Create a Checkout session (client-side) by POSTing to `/api/checkout` with JSON 
 
 Configure your Stripe Dashboard webhook to point to `/api/webhook` on your deployed domain and set `STRIPE_WEBHOOK_SECRET` accordingly.
 
-## Supabase / Entries persistence
+## Supabase / Student notes persistence
 
-To persist journal entries across devices the app can use Supabase. Required env vars:
+To persist student notes across devices the app can use Supabase. Required env vars:
 
 - `SUPABASE_URL` — your Supabase project URL
 - `SUPABASE_SERVICE_ROLE` — service role key for server-side inserts
 
-Create a table named `journal_entries` with columns at minimum: `id`, `text`, `mood`, `created_at` (timestamp).
+Create a table named `journal_entries` (legacy name still used in code) with columns at minimum: `id`, `text`, `mood`, `created_at` (timestamp).
 
 If Supabase is not configured the client will fall back to `localStorage`.
 
