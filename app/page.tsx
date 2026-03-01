@@ -12,16 +12,29 @@ export default function Home() {
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
           <a
-            href="/journal"
+            href="/programs"
             className="inline-block bg-white text-purple-600 font-bold py-4 px-10 rounded-lg hover:bg-gray-100 transition text-xl shadow-lg"
           >
             View Programs →
           </a>
           <a
-            href="/journal"
+            href="https://calendly.com/your-calendly-link"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-yellow-400 text-gray-900 font-bold py-4 px-10 rounded-lg hover:bg-yellow-500 transition text-xl shadow-lg"
           >
             Book a Trial Lesson
+          </a>
+        </div>
+        <div className="mt-12 flex flex-wrap gap-6 justify-center items-center text-white text-sm">
+          <a href="mailto:hello@confidenceenglishacademy.com" className="hover:text-yellow-300 transition">
+            ✉️ hello@confidenceenglishacademy.com
+          </a>
+          <a href="https://instagram.com/confidenceenglishacademy" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-300 transition">
+            📱 Instagram
+          </a>
+          <a href="https://tiktok.com/@confidenceenglishacademy" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-300 transition">
+            🎵 TikTok
           </a>
         </div>
       </div>

@@ -130,7 +130,7 @@ async function checkSupabase(
 function summarizeRouteChecks(): Record<string, HealthCheckResult> {
   return {
     home: { ok: true, message: "Route exists" },
-    journal: { ok: true, message: "Route exists" },
+    programs: { ok: true, message: "Route exists" },
     entriesApi: { ok: true, message: "Route exists" },
     checkoutApi: { ok: true, message: "Route exists" },
     reflectApi: { ok: true, message: "Route exists" },

@@ -41,8 +41,8 @@ export default function ProgramsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           priceId,
-          successUrl: `${origin}/journal?checkout=success`,
-          cancelUrl: `${origin}/journal?checkout=canceled`,
+          successUrl: `${origin}/programs?checkout=success`,
+          cancelUrl: `${origin}/programs?checkout=canceled`,
         }),
       });
 
@@ -117,10 +117,18 @@ export default function ProgramsPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <a
-              href="mailto:hello@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request"
+              href="https://calendly.com/your-calendly-link"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block bg-purple-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-purple-700"
             >
-              Request Trial by Email
+              Book Trial on Calendly →
+            </a>
+            <a
+              href="mailto:hello@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request"
+              className="inline-block bg-white border border-purple-600 text-purple-700 font-semibold py-3 px-5 rounded-lg hover:bg-purple-50"
+            >
+              Email Us
             </a>
             <Link
               href="/"

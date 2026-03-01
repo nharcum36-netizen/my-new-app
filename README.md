@@ -8,7 +8,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### Quick Links
 
-- Programs: [https://my-new-app-one-chi.vercel.app/journal](https://my-new-app-one-chi.vercel.app/journal)
+- Programs: [https://my-new-app-one-chi.vercel.app/programs](https://my-new-app-one-chi.vercel.app/programs)
 - Health dashboard: [https://my-new-app-one-chi.vercel.app/admin/health](https://my-new-app-one-chi.vercel.app/admin/health)
 - Health API: [https://my-new-app-one-chi.vercel.app/api/health](https://my-new-app-one-chi.vercel.app/api/health)
 
