@@ -1,4 +1,4 @@
-# MindScribe - AI-Powered Journaling App
+# Confidence English Academy - Tutoring Platform
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
@@ -6,14 +6,32 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 **Production URL:** [https://my-new-app-one-chi.vercel.app](https://my-new-app-one-chi.vercel.app)
 
+### Quick Links
+
+- Journal: [https://my-new-app-one-chi.vercel.app/journal](https://my-new-app-one-chi.vercel.app/journal)
+- Health dashboard: [https://my-new-app-one-chi.vercel.app/admin/health](https://my-new-app-one-chi.vercel.app/admin/health)
+- Health API: [https://my-new-app-one-chi.vercel.app/api/health](https://my-new-app-one-chi.vercel.app/api/health)
+
+## 🎓 Confidence English Academy Launch Kit
+
+This repo now includes a complete tutoring business launch package in `business-kit/`:
+
+- Brand and positioning (`business-kit/brand-and-positioning.md`)
+- Website copy (`business-kit/website-copy.md`)
+- Pricing and offers (`business-kit/pricing-and-offers.md`)
+- 8-week curriculum (`business-kit/curriculum/8-week-roadmap.md`)
+- Operations SOP and legal checklist (`business-kit/operations/`)
+- Marketing system including a 14-day content calendar and 3-email sequence (`business-kit/marketing/`)
+
+Start here: `business-kit/README.md`
+
 ## ✨ Features
 
-- 📖 Beautiful journal interface with integrated Canva-designed journal pages
-- 🤖 AI-powered reflections using OpenAI
-- 😊 Mood tracking (happy, neutral, sad, angry)
-- 💳 Stripe subscription integration
-- 💾 Entry persistence with Supabase or localStorage fallback
-- 📱 Responsive design with Tailwind CSS
+- 🎓 Tutoring business landing and programs page
+- 💳 Stripe subscription checkout for membership plans
+- 🧪 Built-in health dashboard for production readiness checks
+- 📚 Complete business launch kit (brand, pricing, curriculum, marketing, operations)
+- 📱 Responsive UI with Tailwind CSS
 
 ## Getting Started
 
@@ -108,5 +126,50 @@ curl -X POST https://your-site.com/api/prices \
 ```
 
 Response contains `product` and `price` objects from Stripe. You can then copy the `price.id` into `NEXT_PUBLIC_PRICE_ID` for client Checkout.
+
+## Launch checklist (recommended)
+
+Use this before going live to avoid customer-facing issues.
+
+1. Add environment variables in Vercel (Production, Preview, and Development as needed):
+
+- `OPENAI_API_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `NEXT_PUBLIC_PRICE_ID`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `PRICE_CREATION_KEY` (optional, only if using `/api/prices`)
+
+2. Configure Stripe:
+
+- Create/confirm your subscription Product + Price in Stripe.
+- Set `NEXT_PUBLIC_PRICE_ID` to that Stripe `price_...` value.
+- Point webhook to `https://<your-domain>/api/webhook`.
+- Add webhook events: `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`.
+- Paste webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
+- For payouts: Stripe Dashboard → Settings → Bank accounts and scheduling (or Payouts) → add debit card/bank and complete verification.
+
+3. Configure Supabase:
+
+- Ensure tables exist (`journal_entries`, `subscriptions`).
+- Confirm service-role key is set only on server env vars (`SUPABASE_SERVICE_ROLE`).
+
+4. Validate app health:
+
+- Open `/admin/health` after deployment.
+- Confirm **Overall Status** is healthy.
+- Confirm **Production Readiness** is ready before launch.
+
+5. Run final checks:
+
+```bash
+npm run lint
+npm run build
+```
+
+You can also copy `.env.example` to `.env.local` for local setup.
 
 

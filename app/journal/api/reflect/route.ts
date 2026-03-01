@@ -1,5 +1,11 @@
 import OpenAI from "openai";
 
+function buildFallbackReflection(entry: string) {
+  const normalized = entry.trim();
+  const snippet = normalized.length > 180 ? `${normalized.slice(0, 180)}...` : normalized;
+  return `Thank you for sharing. I hear that this is meaningful for you: "${snippet}"\n\nA gentle next step: name one emotion you feel right now, then write one small action that would support you today.`;
+}
+
 export async function POST(req: Request) {
   try {
     const { entry } = await req.json();
@@ -11,15 +17,21 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return Response.json(
-        { error: "OpenAI API key not configured" },
-        { status: 500 }
-      );
+    const openAiKey = process.env.OPENAI_API_KEY?.trim();
+    const hasOpenAiKey =
+      !!openAiKey &&
+      !openAiKey.toLowerCase().includes("your_") &&
+      !openAiKey.toLowerCase().includes("replace_me");
+
+    if (!hasOpenAiKey) {
+      return Response.json({
+        reflection: buildFallbackReflection(entry),
+        source: "fallback",
+      });
     }
 
     const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: openAiKey,
     });
 
     const response = await openai.chat.completions.create({

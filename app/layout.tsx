@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MindScribe - AI-Powered Journal",
-  description: "Reflect, grow, and understand yourself through journaling with AI-powered insights",
+  title: "Confidence English Academy",
+  description: "Online English tutoring for adults, professionals, and interview preparation.",
 };
 
 export default function RootLayout({

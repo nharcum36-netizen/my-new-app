@@ -39,7 +39,10 @@ export async function POST(req: Request) {
     // Persist subscription-related events to Supabase (if configured)
     const supabase = getSupabaseClient();
 
-    const handleSubscription = async (subscription: Stripe.Subscription | null, extra: any = {}) => {
+    const handleSubscription = async (
+      subscription: Stripe.Subscription | null,
+      extra: { email?: string | null } = {}
+    ) => {
       if (!subscription || !supabase) return;
       try {
         const row = {

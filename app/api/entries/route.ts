@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+type EntryRow = {
+  id: number;
+  text: string;
+  mood: "happy" | "neutral" | "sad" | "angry";
+  created_at: string;
+};
+
 function getSupabaseClient() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
@@ -30,7 +37,7 @@ export async function GET() {
       return NextResponse.json({ entries: [] });
     }
 
-    const entries = (data || []).map((r: any) => ({
+    const entries = ((data || []) as EntryRow[]).map((r) => ({
       id: r.id,
       text: r.text,
       mood: r.mood,

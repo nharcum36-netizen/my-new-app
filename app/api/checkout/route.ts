@@ -7,7 +7,12 @@ export async function POST(req: Request) {
     const origin = new URL(req.url).origin;
 
     const stripeSecret = process.env.STRIPE_SECRET_KEY?.trim();
-    if (!stripeSecret || stripeSecret.includes("YOUR_")) {
+    const hasStripeSecret =
+      !!stripeSecret &&
+      !stripeSecret.toLowerCase().includes("your_") &&
+      !stripeSecret.toLowerCase().includes("replace_me");
+
+    if (!hasStripeSecret) {
       return NextResponse.json({ error: "Stripe secret key not configured" }, { status: 500 });
     }
 
@@ -32,7 +37,7 @@ export async function POST(req: Request) {
                   unit_amount: 1900,
                   recurring: { interval: "month" },
                   product_data: {
-                    name: "MindScribe Premium",
+                    name: "Confidence English Academy Membership",
                   },
                 },
               },
@@ -43,10 +48,10 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({ url: session.url, id: session.id });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Checkout error:", err);
     const errorMessage =
-      typeof err?.message === "string" && err.message.length > 0
+      err instanceof Error && err.message.length > 0
         ? err.message
         : "Could not create checkout session";
 
