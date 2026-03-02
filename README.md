@@ -68,14 +68,21 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Stripe integration (added)
+## Business Configuration
 
-This project includes basic Stripe integration to create Checkout sessions and handle webhooks.
+See `BUSINESS-CONFIG.md` to update your contact info (email, Calendly, social media).
+
+See `STRIPE-SETUP.md` for payment system configuration.
+
+## Stripe Integration
+
+This project includes Stripe integration for subscriptions.
 
 Required environment variables (set in Vercel or locally in `.env.local`):
 
 - `STRIPE_SECRET_KEY` — your Stripe secret key (starts with `sk_...`).
 - `STRIPE_WEBHOOK_SECRET` — the webhook signing secret for your webhook endpoint (for verifying webhook signatures).
+- `NEXT_PUBLIC_PRICE_ID` — the Stripe Price ID for your subscription product.
 
 Local testing:
 

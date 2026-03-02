@@ -18,7 +18,7 @@ export default function Home() {
             View Programs →
           </a>
           <a
-            href="https://calendly.com/your-calendly-link"
+            href="https://calendly.com/confidenceenglish/trial"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-yellow-400 text-gray-900 font-bold py-4 px-10 rounded-lg hover:bg-yellow-500 transition text-xl shadow-lg"
@@ -27,8 +27,8 @@ export default function Home() {
           </a>
         </div>
         <div className="mt-12 flex flex-wrap gap-6 justify-center items-center text-white text-sm">
-          <a href="mailto:hello@confidenceenglishacademy.com" className="hover:text-yellow-300 transition">
-            ✉️ hello@confidenceenglishacademy.com
+          <a href="mailto:contact@confidenceenglishacademy.com" className="hover:text-yellow-300 transition">
+            ✉️ contact@confidenceenglishacademy.com
           </a>
           <a href="https://instagram.com/confidenceenglishacademy" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-300 transition">
             📱 Instagram

@@ -117,7 +117,7 @@ export default function ProgramsPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <a
-              href="https://calendly.com/your-calendly-link"
+              href="https://calendly.com/confidenceenglish/trial"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-purple-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-purple-700"
@@ -125,7 +125,7 @@ export default function ProgramsPage() {
               Book Trial on Calendly →
             </a>
             <a
-              href="mailto:hello@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request"
+              href="mailto:contact@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request"
               className="inline-block bg-white border border-purple-600 text-purple-700 font-semibold py-3 px-5 rounded-lg hover:bg-purple-50"
             >
               Email Us
