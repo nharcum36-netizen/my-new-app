@@ -190,8 +190,7 @@ export default function LessonsPage() {
                 {/* Action Button */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a
-                    href={plan.download}
-                    download
+                    href={`/api/download?file=${plan.download.split('/').pop()}`}
                     className={`flex-1 bg-gradient-to-r ${plan.color} text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition flex items-center justify-center gap-2`}
                   >
                     ⬇️ Download Full Plan
