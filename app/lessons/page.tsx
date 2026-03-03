@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { Download } from 'lucide-react';
 
 export default function LessonsPage() {
   const lessonPlans = [
@@ -195,8 +194,7 @@ export default function LessonsPage() {
                     download
                     className={`flex-1 bg-gradient-to-r ${plan.color} text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition flex items-center justify-center gap-2`}
                   >
-                    <Download size={20} />
-                    Download Full Plan
+                    ⬇️ Download Full Plan
                   </a>
                   <button className="flex-1 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg transition">
                     View Preview
