@@ -5,13 +5,13 @@ import Link from "next/link";
 
 const ADULT_PROGRAMS = [
   {
-    title: "1-on-1 Coaching",
-    description: "Personalized weekly lessons focused on your speaking goals.",
+    title: "1-on-1 ESL Coaching",
+    description: "Personalized lessons to improve your English speaking confidence.",
     price: "$35 / 60 min",
   },
   {
-    title: "Group Speaking Class",
-    description: "Small group practice sessions for confidence and fluency.",
+    title: "ESL Group Speaking Class",
+    description: "Practice English with other learners in supportive small groups.",
     price: "$79 / month",
   },
   {
@@ -23,13 +23,13 @@ const ADULT_PROGRAMS = [
 
 const YOUTH_PROGRAMS = [
   {
-    title: "Youth 1-on-1 Coaching (Ages 5-17)",
-    description: "Fun, engaging lessons that build speaking confidence for school and life.",
+    title: "Youth ESL Coaching (Ages 5-17)",
+    description: "Fun lessons for children and teens learning English as a second language.",
     price: "$30 / 60 min",
   },
   {
-    title: "Kids & Teens Group Class",
-    description: "Interactive small-group sessions with age-appropriate activities.",
+    title: "Kids & Teens ESL Group",
+    description: "Age-appropriate English learning with games and conversation practice.",
     price: "$69 / month",
   },
   {
@@ -85,7 +85,7 @@ export default function ProgramsPage() {
             Confidence English Academy
           </h1>
           <p className="text-white text-lg md:text-xl drop-shadow-md max-w-3xl mx-auto">
-            Practical English tutoring for children (5-17), teens, adults, and professionals.
+            ESL programs for non-native speakers — from children to working professionals.
           </p>
         </div>
 
