@@ -55,6 +55,9 @@ export async function POST(req: Request) {
         ? err.message
         : "Could not create checkout session";
 
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json({ 
+      error: errorMessage,
+      details: err instanceof Error ? err.message : String(err)
+    }, { status: 500 });
   }
 }
