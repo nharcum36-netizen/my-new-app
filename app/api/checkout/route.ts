@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import Stripe from "stripe";
 
 export async function POST(req: Request) {
   try {
@@ -8,34 +7,42 @@ export async function POST(req: Request) {
     if (!stripeSecret || stripeSecret.includes("your_") || stripeSecret.includes("replace_me")) {
       return NextResponse.json({ 
         error: "Stripe secret key not configured" 
+      }, { status: 400 });
+    }
+
+    const { successUrl, cancelUrl } = await req.json();
+    const origin = new URL(req.url).origin;
+
+    // Use Stripe REST API directly (more reliable)
+    const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${stripeSecret}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        "mode": "subscription",
+        "line_items[0][price_data][currency]": "usd",
+        "line_items[0][price_data][unit_amount]": "1900",
+        "line_items[0][price_data][recurring][interval]": "month",
+        "line_items[0][price_data][product_data][name]": "Confidence English Academy Membership",
+        "line_items[0][quantity]": "1",
+        "success_url": successUrl || `${origin}/programs?checkout=success`,
+        "cancel_url": cancelUrl || `${origin}/programs?checkout=canceled`,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error("Stripe API error:", error);
+      return NextResponse.json({ 
+        error: `Stripe error: ${response.status}`,
+        details: error
       }, { status: 500 });
     }
 
-    const { priceId, successUrl, cancelUrl } = await req.json();
-    const origin = new URL(req.url).origin;
-
-    const stripe = new Stripe(stripeSecret);
+    const session = await response.json();
     
-    // Always use inline price for now (fallback)
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            unit_amount: 1900, // $19.00
-            recurring: { interval: "month" },
-            product_data: {
-              name: "Confidence English Academy Membership",
-            },
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: successUrl || `${origin}/programs?checkout=success`,
-      cancel_url: cancelUrl || `${origin}/programs?checkout=canceled`,
-    });
-
     return NextResponse.json({ 
       url: session.url, 
       id: session.id 
@@ -45,8 +52,7 @@ export async function POST(req: Request) {
     console.error("Checkout error:", err);
     
     return NextResponse.json({ 
-      error: err?.message || "Could not create checkout session",
-      type: err?.type || "unknown"
+      error: err?.message || "Could not create checkout session"
     }, { status: 500 });
   }
 }
