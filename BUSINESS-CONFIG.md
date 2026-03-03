@@ -7,16 +7,16 @@ Replace the values below with your actual information. These will be referenced 
 export const BUSINESS_CONFIG = {
   // Contact Information
   businessName: "Confidence English Academy",
-  ownerName: "Your Name",
-  email: "hello@confidenceenglishacademy.com", // ← REPLACE WITH YOUR EMAIL
-  phone: "+1 (555) 123-4567", // Optional
+  ownerName: "Nichole T",
+  email: "confidenceenglishacademy1on1@outlook.com",
+  phone: "", // Optional
   
   // Booking & Calendar
-  calendlyUrl: "https://calendly.com/your-calendly-link", // ← REPLACE WITH YOUR CALENDLY URL
+  calendlyUrl: "", // ← ADD YOUR CALENDLY URL (free at calendly.com)
   
   // Social Media
-  instagram: "https://instagram.com/confidenceenglishacademy", // ← REPLACE WITH YOUR INSTAGRAM
-  tiktok: "https://tiktok.com/@confidenceenglishacademy", // ← REPLACE WITH YOUR TIKTOK
+  instagram: "https://instagram.com/confidenceenglish.esl",
+  tiktok: "https://tiktok.com/@confidenceenglish.esl",
   youtube: "", // Optional
   
   // Pricing
@@ -27,7 +27,7 @@ export const BUSINESS_CONFIG = {
   businessRate: "$55/session",
   
   // Business Details
-  businessHours: "Tue-Fri evenings, Sat mornings",
+  businessHours: "Monday-Friday 5pm-9pm, Saturday 10am-4pm, Sunday by request",
   timezone: "EST",
 };
 ```
@@ -53,13 +53,17 @@ nichole.t@gmail.com
 1. Go to https://calendly.com
 2. Sign up (free)
 3. Create new event: "30-min Trial Lesson"
-4. Copy the URL from your event
-5. Replace: `https://calendly.com/your-calendly-link`
+4. **Connect to Outlook:** Settings → Calendar → Add Outlook calendar
+   - This syncs bookings with your Outlook calendar automatically
+5. Copy the URL from your event
+6. Replace: `https://calendly.com/your-calendly-link`
 
 **Example:**
 ```
 https://calendly.com/nichole-t/trial-lesson
 ```
+
+**Why Calendly?** It's free, easy, and syncs with Outlook so bookings appear in your email automatically.
 
 ---
 
