@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Stripe secret key not configured" }, { status: 500 });
     }
 
-    const hasValidPriceId = !!priceId && !String(priceId).includes("YOUR_PRICE_ID_HERE");
+    const hasValidPriceId = false; // Force fallback pricing for now
 
     const stripe = new Stripe(stripeSecret, { 
       apiVersion: "2024-11-20" as any
