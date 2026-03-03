@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const PROGRAMS = [
+const ADULT_PROGRAMS = [
   {
     title: "1-on-1 Coaching",
     description: "Personalized weekly lessons focused on your speaking goals.",
@@ -18,6 +18,24 @@ const PROGRAMS = [
     title: "Business & Interview Intensive",
     description: "High-impact coaching for meetings, interviews, and presentations.",
     price: "$55 / session",
+  },
+];
+
+const YOUTH_PROGRAMS = [
+  {
+    title: "Youth 1-on-1 Coaching (Ages 5-17)",
+    description: "Fun, engaging lessons that build speaking confidence for school and life.",
+    price: "$30 / 60 min",
+  },
+  {
+    title: "Kids & Teens Group Class",
+    description: "Interactive small-group sessions with age-appropriate activities.",
+    price: "$69 / month",
+  },
+  {
+    title: "Teen Interview & College Prep",
+    description: "Prepare for college interviews, presentations, and academic discussions.",
+    price: "$45 / session",
   },
 ];
 
@@ -67,7 +85,7 @@ export default function ProgramsPage() {
             Confidence English Academy
           </h1>
           <p className="text-white text-lg md:text-xl drop-shadow-md max-w-3xl mx-auto">
-            Practical English tutoring for adults, professionals, and interview preparation.
+            Practical English tutoring for children (5-17), teens, adults, and professionals.
           </p>
         </div>
 
@@ -83,14 +101,28 @@ export default function ProgramsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-          {PROGRAMS.map((program) => (
-            <div key={program.title} className="rounded-2xl bg-white/95 p-6 shadow-xl">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">{program.title}</h2>
-              <p className="text-gray-700 mb-4">{program.description}</p>
-              <p className="text-purple-700 font-bold">{program.price}</p>
-            </div>
-          ))}
+        <div className="mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">Adult Programs (18+)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+            {ADULT_PROGRAMS.map((program) => (
+              <div key={program.title} className="rounded-2xl bg-white/95 p-6 shadow-xl">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{program.title}</h3>
+                <p className="text-gray-700 mb-4">{program.description}</p>
+                <p className="text-purple-700 font-bold">{program.price}</p>
+              </div>
+            ))}
+          </div>
+          
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">Youth Programs (Ages 5-17)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {YOUTH_PROGRAMS.map((program) => (
+              <div key={program.title} className="rounded-2xl bg-white/95 p-6 shadow-xl border-4 border-yellow-400">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{program.title}</h3>
+                <p className="text-gray-700 mb-4">{program.description}</p>
+                <p className="text-purple-700 font-bold">{program.price}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="rounded-2xl bg-white/95 p-6 md:p-8 shadow-xl mb-6">

@@ -8,7 +8,7 @@ export default function Home() {
           Confidence English Academy
         </h1>
         <p className="text-xl md:text-2xl text-white mb-8 drop-shadow-md max-w-2xl mx-auto">
-          Practical English coaching for adults who want to speak clearly and confidently at work and in daily life.
+          Practical English coaching for children, teens, and adults who want to speak clearly and confidently.
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
           <a
