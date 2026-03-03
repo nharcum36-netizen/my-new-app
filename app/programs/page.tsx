@@ -149,7 +149,7 @@ export default function ProgramsPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <a
-              href="mailto:contact@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request&body=Hi!%20I'd%20like%20to%20book%20a%20trial%20lesson.%0A%0APreferred%20Program:%20%0AAge%20Group:%20%0APreferred%20Days/Times:%20%0A%0AThank%20you!"
+              href="mailto:confidenceenglishacademy1on1@outlook.com?subject=Trial%20Lesson%20Request&body=Hi!%20I'd%20like%20to%20book%20a%20trial%20lesson.%0A%0APreferred%20Program:%20%0AAge%20Group:%20%0APreferred%20Days/Times:%20%0A%0AThank%20you!"
               className="inline-block bg-purple-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-purple-700"
             >
               Book Trial via Email →

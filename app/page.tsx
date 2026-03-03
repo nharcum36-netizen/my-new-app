@@ -18,15 +18,15 @@ export default function Home() {
             View Programs →
           </a>
           <a
-            href="mailto:contact@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request&body=Hi!%20I'd%20like%20to%20book%20a%20trial%20lesson.%20Please%20let%20me%20know%20your%20available%20times."
+            href="mailto:confidenceenglishacademy1on1@outlook.com?subject=Trial%20Lesson%20Request&body=Hi!%20I'd%20like%20to%20book%20a%20trial%20lesson.%20Please%20let%20me%20know%20your%20available%20times."
             className="inline-block bg-yellow-400 text-gray-900 font-bold py-4 px-10 rounded-lg hover:bg-yellow-500 transition text-xl shadow-lg"
           >
             Book a Trial Lesson
           </a>
         </div>
         <div className="mt-12 flex flex-wrap gap-6 justify-center items-center text-white text-sm">
-          <a href="mailto:contact@confidenceenglishacademy.com" className="hover:text-yellow-300 transition">
-            ✉️ contact@confidenceenglishacademy.com
+          <a href="mailto:confidenceenglishacademy1on1@outlook.com" className="hover:text-yellow-300 transition">
+            ✉️ confidenceenglishacademy1on1@outlook.com
           </a>
           <a href="https://instagram.com/confidenceenglishacademy" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-300 transition">
             📱 Instagram
