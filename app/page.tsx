@@ -18,9 +18,7 @@ export default function Home() {
             View Programs →
           </a>
           <a
-            href="https://calendly.com/confidenceenglish/trial"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:contact@confidenceenglishacademy.com?subject=Trial%20Lesson%20Request&body=Hi!%20I'd%20like%20to%20book%20a%20trial%20lesson.%20Please%20let%20me%20know%20your%20available%20times."
             className="inline-block bg-yellow-400 text-gray-900 font-bold py-4 px-10 rounded-lg hover:bg-yellow-500 transition text-xl shadow-lg"
           >
             Book a Trial Lesson
