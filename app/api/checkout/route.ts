@@ -18,7 +18,9 @@ export async function POST(req: Request) {
 
     const hasValidPriceId = !!priceId && !String(priceId).includes("YOUR_PRICE_ID_HERE");
 
-    const stripe = new Stripe(stripeSecret);
+    const stripe = new Stripe(stripeSecret, { 
+      apiVersion: "2024-11-20" as any
+    });
     const session = await stripe.checkout.sessions.create(
       hasValidPriceId
         ? {
