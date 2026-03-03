@@ -196,9 +196,14 @@ export default function LessonsPage() {
                   >
                     ⬇️ Download Full Plan
                   </a>
-                  <button className="flex-1 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg transition">
+                  <a
+                    href={plan.download}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center"
+                  >
                     View Preview
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
