@@ -23,6 +23,12 @@ export default function Home() {
           >
             Book a Trial Lesson
           </a>
+          <a
+            href="/lessons"
+            className="inline-block bg-indigo-600 text-white font-bold py-4 px-10 rounded-lg hover:bg-indigo-700 transition text-xl shadow-lg"
+          >
+            📚 View Lessons
+          </a>
         </div>
         <div className="mt-12 flex flex-wrap gap-6 justify-center items-center text-white text-sm">
           <a href="mailto:confidenceenglishacademy1on1@outlook.com" className="hover:text-yellow-300 transition">

@@ -155,6 +155,12 @@ export default function ProgramsPage() {
               Book Trial via Email →
             </a>
             <Link
+              href="/lessons"
+              className="inline-block bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700"
+            >
+              View Lesson Plans
+            </Link>
+            <Link
               href="/"
               className="inline-block bg-white border border-purple-600 text-purple-700 font-semibold py-3 px-5 rounded-lg hover:bg-purple-50"
             >
