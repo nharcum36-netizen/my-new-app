@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(request: NextRequest) {
   try {
-    const { planType, email, successUrl, cancelUrl } = await request.json();
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe secret key is not configured' },
+        { status: 500 }
+      );
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2022-11-15' });
+
+    const { planType, billingCycle, email, successUrl, cancelUrl } = await request.json();
+    const origin = new URL(request.url).origin;
 
     // Map plan types to Stripe prices
     const priceMap: { [key: string]: string } = {
@@ -17,10 +25,11 @@ export async function POST(request: NextRequest) {
       elite_annual: process.env.STRIPE_PRICE_ELITE_ANNUAL || 'price_elite_annual',
     };
 
-    const priceId = priceMap[planType];
+    const priceKey = billingCycle === 'annual' ? `${planType}_annual` : planType;
+    const priceId = priceMap[priceKey];
 
     if (!priceId || priceId.startsWith('price_')) {
-      console.error('Price ID not configured:', { planType, priceId });
+      console.error('Price ID not configured:', { priceKey, priceId });
       return NextResponse.json(
         { error: 'Plan pricing not configured. Please contact support.' },
         { status: 400 }
@@ -38,11 +47,11 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+      success_url: successUrl || `${origin}/dashboard?checkout=success`,
+      cancel_url: cancelUrl || `${origin}/pricing?checkout=cancelled`,
       allow_promotion_codes: true, // Allow coupon codes
       metadata: {
-        plan: planType,
+        plan: priceKey,
         email: email,
       },
     });

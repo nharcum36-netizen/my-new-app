@@ -1,47 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
-
-// SimpleStorage: In-memory user database (replace with real DB later)
-// In production, use PostgreSQL, MongoDB, or similar
-const users = new Map<
-  string,
-  {
-    id: string;
-    email: string;
-    passwordHash: string;
-    name: string;
-    englishLevel: string;
-    plan: string;
-    createdAt: string;
-  }
->();
-
-// Demo account
-users.set("demo@example.com", {
-  id: "demo-user",
-  email: "demo@example.com",
-  passwordHash: hashPassword("demo1234"),
-  name: "Demo User",
-  englishLevel: "beginner",
-  plan: "starter",
-  createdAt: new Date().toISOString(),
-});
-
-function hashPassword(password: string): string {
-  return crypto.createHash("sha256").update(password).digest("hex");
-}
-
-function generateToken(email: string): string {
-  return crypto
-    .createHash("sha256")
-    .update(email + Date.now() + Math.random())
-    .digest("hex");
-}
+import {
+  createUser,
+  generateToken,
+  getUserByEmail,
+  normalizeEmail,
+} from "../../../../lib/auth-store";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { email, password, name, englishLevel } = body;
+    const normalizedEmail = normalizeEmail(email || "");
 
     // Validate inputs
     if (!email || !password || !name) {
@@ -59,29 +28,22 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user already exists
-    if (users.has(email)) {
+    if (getUserByEmail(normalizedEmail)) {
       return NextResponse.json(
         { error: "Email already registered" },
         { status: 409 }
       );
     }
 
-    // Create new user
-    const userId = crypto.randomUUID();
-    const newUser = {
-      id: userId,
-      email,
-      passwordHash: hashPassword(password),
+    const newUser = createUser({
+      email: normalizedEmail,
+      password,
       name,
-      englishLevel: englishLevel || "beginner",
-      plan: "free", // Start with free tier
-      createdAt: new Date().toISOString(),
-    };
-
-    users.set(email, newUser);
+      englishLevel,
+    });
 
     // Generate token
-    const token = generateToken(email);
+    const token = generateToken(normalizedEmail);
 
     return NextResponse.json(
       {
