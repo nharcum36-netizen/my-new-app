@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PricingPage() {
+  const router = useRouter();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   const plans = [
     {
@@ -22,7 +25,7 @@ export default function PricingPage() {
       ],
       cta: "Start Learning",
       highlight: false,
-      stripeLink: "https://buy.stripe.com/starter-plan-monthly" // Replace with real
+      planId: "starter"
     },
     {
       name: "Pro",
@@ -41,7 +44,7 @@ export default function PricingPage() {
       ],
       cta: "Subscribe Now",
       highlight: true,
-      stripeLink: "https://buy.stripe.com/pro-plan-monthly" // Replace with real
+      planId: "pro"
     },
     {
       name: "Elite",
@@ -60,9 +63,50 @@ export default function PricingPage() {
       ],
       cta: "Get Elite Access",
       highlight: false,
-      stripeLink: "https://buy.stripe.com/elite-plan-monthly" // Replace with real
+      planId: "elite"
     }
   ];
+
+  const handleCheckout = async (planId: string) => {
+    const token = localStorage.getItem("auth_token");
+    const email = localStorage.getItem("user_email");
+
+    // If not logged in, redirect to login
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    setLoadingPlan(planId);
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planType: planId,
+          billingCycle: billingCycle,
+          email: email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Checkout failed");
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      alert(err.message || "An error occurred");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
@@ -139,16 +183,17 @@ export default function PricingPage() {
                 </ul>
 
                 {/* CTA Button */}
-                <a
-                  href={plan.stripeLink}
-                  className={`block w-full text-center py-3 rounded-lg font-bold text-lg transition ${
+                <button
+                  onClick={() => handleCheckout(plan.planId)}
+                  disabled={loadingPlan === plan.planId}
+                  className={`w-full text-center py-3 rounded-lg font-bold text-lg transition ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:shadow-lg hover:shadow-cyan-500/50"
-                      : "bg-slate-600 text-white hover:bg-slate-500"
+                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:shadow-lg hover:shadow-cyan-500/50 disabled:opacity-50"
+                      : "bg-slate-600 text-white hover:bg-slate-500 disabled:opacity-50"
                   }`}
                 >
-                  {plan.cta}
-                </a>
+                  {loadingPlan === plan.planId ? "Processing..." : plan.cta}
+                </button>
 
                 {plan.name === "Starter" && (
                   <p className="text-center text-xs text-gray-400 mt-4">

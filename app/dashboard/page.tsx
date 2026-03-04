@@ -1,14 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"tutor" | "lessons" | "progress" | "schedule">("tutor");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<{ role: "user" | "ai"; text: string }>>([
     { role: "ai", text: "Hello! 👋 I'm your AI English tutor. What would you like to learn today?" }
   ]);
+  const [userEmail, setUserEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem("auth_token");
+    const email = localStorage.getItem("user_email");
+    
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    setUserEmail(email || "");
+    setIsLoading(false);
+  }, [router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user_email");
+    router.push("/");
+  };
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -26,7 +58,8 @@ export default function DashboardPage() {
   };
 
   const studentData = {
-    name: "Sarah",
+    name: userEmail?.split("@")[0] || "Student",
+    email: userEmail,
     level: "Beginner (A1-A2)",
     plan: "Pro",
     progress: 34,
@@ -56,9 +89,17 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold">Welcome back, {studentData.name}! 👋</h1>
             <p className="text-blue-100">Level: {studentData.level} | Plan: {studentData.plan}</p>
           </div>
-          <button className="bg-white text-blue-600 font-bold px-6 py-2 rounded-lg hover:bg-gray-100">
-            Account Settings
-          </button>
+          <div className="flex gap-3">
+            <a href="#" className="bg-white text-blue-600 font-bold px-6 py-2 rounded-lg hover:bg-gray-100 transition">
+              Settings
+            </a>
+            <button 
+              onClick={handleLogout}
+              className="bg-red-500 text-white font-bold px-6 py-2 rounded-lg hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
