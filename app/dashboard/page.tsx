@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +13,13 @@ export default function DashboardPage() {
   ]);
   const [userEmail, setUserEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Check authentication on mount
   useEffect(() => {
@@ -42,19 +49,45 @@ export default function DashboardPage() {
     router.push("/");
   };
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
+  const handleSendMessage = async () => {
+    if (!message.trim() || isSending) return;
     
-    setMessages([...messages, { role: "user", text: message }]);
+    const userMessage = message.trim();
+    const newMessages = [...messages, { role: "user" as const, text: userMessage }];
+    
+    setMessages(newMessages);
     setMessage("");
+    setIsSending(true);
     
-    // Simulate AI response (will be replaced with real API)
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: newMessages,
+          userLevel: studentData.level,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to get response");
+      }
+
+      setMessages([...newMessages, { 
         role: "ai", 
-        text: "That's a great question! Let me help you with that. (Demo mode - real AI integration coming soon)" 
+        text: data.response 
       }]);
-    }, 500);
+    } catch (error: any) {
+      setMessages([...newMessages, { 
+        role: "ai", 
+        text: "I apologize, I'm having trouble connecting right now. Please try again in a moment. 🙏" 
+      }]);
+      console.error("Chat error:", error);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const studentData = {
@@ -178,6 +211,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   ))}
+                  <div ref={messagesEndRef} />
                 </div>
 
                 {/* Input */}
@@ -186,15 +220,17 @@ export default function DashboardPage() {
                     type="text"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                    onKeyPress={(e) => e.key === "Enter" && !isSending && handleSendMessage()}
                     placeholder="Type your message... (e.g., 'teach me about family')"
-                    className="flex-1 bg-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    disabled={isSending}
+                    className="flex-1 bg-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
                   />
                   <button
                     onClick={handleSendMessage}
-                    className="bg-cyan-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-cyan-600"
+                    disabled={isSending}
+                    className="bg-cyan-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
-                    Send
+                    {isSending ? "..." : "Send"}
                   </button>
                 </div>
               </div>
