@@ -28,7 +28,8 @@ export async function POST(request: NextRequest) {
     const priceKey = billingCycle === 'annual' ? `${planType}_annual` : planType;
     const priceId = priceMap[priceKey];
 
-    if (!priceId || priceId.startsWith('price_')) {
+    // Check if price ID is properly configured (real Stripe IDs start with price_1...)
+    if (!priceId || !priceId.startsWith('price_1')) {
       console.error('Price ID not configured:', { priceKey, priceId });
       return NextResponse.json(
         { error: 'Plan pricing not configured. Please contact support.' },
